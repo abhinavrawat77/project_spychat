@@ -1,11 +1,12 @@
 #importing packages used in our program
 from spy_details1 import spy, spies, Messages, friends
 from steganography.steganography import Steganography
+from termcolor import colored,cprint
 #it is a list containing the old status of existing spy
 status = ['BUSY', 'Available', 'at gym']
 
 #it will bethe first message displayed when the programe is run
-print "Hello! Let\'s get started"
+print "welcome to the spy chat"
 #here system will ask user that is he the existing user or a new one
 question = "Do you want to continue as " + spy.salutation + " " + spy.name + " (Y/N)? "
 existing = raw_input(question)
@@ -13,13 +14,13 @@ existing = raw_input(question)
 # this is a function for updating a new status or choosing an older one
 def add_status():
     updated_status= None
-
+    #if there is no status it will follow the if condition
     if spy.current_status != None:
 
         print 'Your current status message is %s \n' % (spy.current_status)
     else:
         print 'You don\'t have any status message currently \n'
-
+    #it ask you to select older status or write a new one
     default = raw_input("Do you want to select from the older status (y/n)? ")
 
     if default.upper() == "N":
@@ -35,7 +36,7 @@ def add_status():
 
         for message in status:
             print '%d. %s' % (item_position, message)
-            item_position = item_position + 1
+            item_position = item_position + 1 #here the indexing starts from 0
 
         message_selection = int(raw_input("\nChoose from the above messages "))
 
@@ -74,12 +75,12 @@ def add_friend():
 
 def select_a_friend():
     item_number = 0
-
     for friend in friends:
         print '%d. %s %s aged %d with rating %.2f is online' % (item_number +1, friend.salutation, friend.name,
                                                    friend.age,
                                                    friend.rating)
         item_number = item_number + 1
+        #it is done because the indexng starts from 0
 
     friend_choice = raw_input("Choose from your friends")
 
@@ -117,13 +118,17 @@ def read_message():
 
 #a function defined to see the chat history of the current sessiom
 def read_chat_history():
-    read_chat_of = select_a_friend()
+    read_for = select_a_friend()
     print '\n6'
-    for chat in friends[read_chat_of].chats:
-        if chat.sent_by_me:
-            print '[%s] %s: %s' % (chat.time.strftime("%d %B %Y"), 'You said:', chat.message)
-        else:
-            print '[%s] %s said: %s' % (chat.time.strftime("%d %B %Y"), friends[read_chat_of].name, chat.message)
+    #message sent by you
+    for chat in friends[read_for].chats:
+        print'[%s]' % (colored(chat.time.strftime('%d,%B,%Y'), 'blue'))
+        print'%s %s' % ((colored('You said:', 'red')),chat.message)
+       # print '%s'%(colored((chat.message),'yellow'))
+    else:
+        #message sent by your spy friend
+        print'[%s]' % (colored(chat.time.strftime('%d,%B,%Y'), 'blue'))
+        print'%s said: %s' % ((colored((friends[read_for].name), 'red')),chat.message)
 
 
 def start_chat(spy):
@@ -140,7 +145,7 @@ def start_chat(spy):
         show_menu = True
 
         while show_menu:
-            menu_choices = "What do you want to do? \n 1. Add a status update \n 2. Add a friend \n 3. Send a secret message \n 4. Read a secret message \n 5. Read Chats from a user \n 6. Close Application \n"
+            menu_choices = "What do you want to do? \n 1. Add a status \n 2. Add a friend \n 3. Send a secret message \n 4. Read a secret message \n 5. Read old conversations \n 6. Close Application \n"
             menu_choice = raw_input(menu_choices)
 
             if len(menu_choice) > 0:
@@ -160,16 +165,16 @@ def start_chat(spy):
                 else:
                     show_menu = False
     else:
-        print 'Sorry you are not of the correct age to be a spy'
+        print 'grow up!!!'
 
-if existing.upper() == "Y":
+if existing.upper() == "Y": #if we are using  existing spy
     start_chat(spy)
 else:
-
+    #if we want to start as a new spy
     spy = spies('','',0,0.0)
     spy.name = raw_input("Welcome to spy chat, you must tell me your spy name first: ")
 
-    if len(spy.name) > 0:
+    if len(spy.name) > 0: #if user entered somehing
         spy.salutation = raw_input("Should I call you Mr. or Ms.?: ")
         spy.age = raw_input("What is your age?")
         spy.age = int(spy.age)
@@ -177,4 +182,5 @@ else:
         spy.rating = float(spy.rating)
         start_chat(spy)
     else:
-        print 'Please add a valid spy name'
+        #if user didn't write anything
+        print 'your name ain\'t valid so try again'
